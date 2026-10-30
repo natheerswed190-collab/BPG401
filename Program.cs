@@ -1,4 +1,3 @@
-
 using System;
 
 // Requirement: Display system information and configure console output.
@@ -219,14 +218,6 @@ for (int questionIndex = 0;
 
 // Requirement: Display final statistics, category scores,
 // question evaluations, and stored generated words.
-/*PrintFinalStatistics(
-    answerLabels,
-    correctByCategory,
-    totalCorrectAnswers,
-    totalAnswers,
-    evaluationResults,
-    generatedWords,
-    wordCounts);*/
 PrintFinalStatistics(
     answerLabels,
     correctByCategory,
@@ -507,8 +498,8 @@ static string NormalizeAnswer(string answer)
 }
 
 
-// each question's evaluation result, and the generated words stored in arrays.
-// Requirement: Display final scores, accuracy, and interactive menu for Section 2.
+// Requirement: Store each question's evaluation result, user answers, correct answers, and generated words in arrays.
+// Requirement: Display final scores, accuracy, and interactive menu.
 static void PrintFinalStatistics(
     string[] answerLabels,
     int[] correctByCategory,
@@ -522,7 +513,7 @@ static void PrintFinalStatistics(
     int questionCount)
 {
     string choice = "";
-
+// Requirement: Use a do-while loop to keep the menu active until the user types 'quit'.
     do
     {
         Console.WriteLine("==================================================");
@@ -534,9 +525,9 @@ static void PrintFinalStatistics(
         Console.WriteLine("5. Show user answers and correct answers");
         Console.WriteLine("Type 'quit' to exit the program.");
         Console.Write("Enter your choice (1-5 or quit): ");
-        
+        // Requirement: Read and trim user choice for menu navigation.
         choice = (Console.ReadLine() ?? "").Trim();
-
+        // Requirement: Check if the user wants to exit the program.
         if (choice.Equals("quit", StringComparison.OrdinalIgnoreCase))
         {
             Console.WriteLine("Exiting the program. Goodbye!");
@@ -544,10 +535,11 @@ static void PrintFinalStatistics(
         }
 
         Console.WriteLine();
-
+// Requirement: Use switch-case to handle each menu option according to specifications.
         switch (choice)
         {
-            case "1":
+             // Requirement: Option 1 - Show correct answers, accuracy percentage, category breakdown, and evaluations.
+            case "1":              
                 Console.WriteLine("Correct answers: " + totalCorrectAnswers + " / " + totalAnswers);
                 double percentage = totalAnswers > 0 ? (double)totalCorrectAnswers * 100 / totalAnswers : 0;
                 Console.WriteLine("Accuracy: " + percentage.ToString("F2") + "%");
@@ -562,7 +554,7 @@ static void PrintFinalStatistics(
                     Console.WriteLine("Question " + (i + 1) + ": Evaluation = " + evaluationResults[i]);
                 }
                 break;
-
+// Requirement: Option 2 - Show User's answers for each question.
             case "2":
                 Console.WriteLine("User's answers for all questions (without words):");
                 for (int i = 0; i < questionCount; i++)
@@ -574,7 +566,7 @@ static void PrintFinalStatistics(
                     }
                 }
                 break;
-
+// Requirement: Option 3 - Show Correct answers for each question.
             case "3":
                 Console.WriteLine("Correct answers for each question (without words):");
                 for (int i = 0; i < questionCount; i++)
@@ -586,7 +578,7 @@ static void PrintFinalStatistics(
                     }
                 }
                 break;
-
+// Requirement: Option 4 - Show Stored generated words for each question.
             case "4":
                 Console.WriteLine("Stored generated words:");
                 for (int i = 0; i < wordCounts.Length; i++)
@@ -600,7 +592,7 @@ static void PrintFinalStatistics(
                     Console.WriteLine();
                 }
                 break;
-
+// Requirement: Option 5 - Show both user answers and correct answers side by side.
             case "5":
                 Console.WriteLine("User answers and correct answers (without words):");
                 for (int i = 0; i < questionCount; i++)
@@ -612,7 +604,7 @@ static void PrintFinalStatistics(
                     }
                 }
                 break;
-
+// Requirement: Handle invalid menu inputs gracefully.
             default:
                 Console.WriteLine("Invalid choice. Please enter a number between 1 and 5 or type 'quit'.");
                 break;
