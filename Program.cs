@@ -219,6 +219,14 @@ for (int questionIndex = 0;
 
 // Requirement: Display final statistics, category scores,
 // question evaluations, and stored generated words.
+/*PrintFinalStatistics(
+    answerLabels,
+    correctByCategory,
+    totalCorrectAnswers,
+    totalAnswers,
+    evaluationResults,
+    generatedWords,
+    wordCounts);*/
 PrintFinalStatistics(
     answerLabels,
     correctByCategory,
@@ -226,8 +234,10 @@ PrintFinalStatistics(
     totalAnswers,
     evaluationResults,
     generatedWords,
-    wordCounts);
-
+    wordCounts,
+    userAnswers,
+    correctAnswers,
+    questionCount);
 
 // Requirement: Display information about the operating system and computer.
 static void PrintSystemInformation()
@@ -497,8 +507,8 @@ static string NormalizeAnswer(string answer)
 }
 
 
-// Requirement: Display final scores, accuracy, results by category,
 // each question's evaluation result, and the generated words stored in arrays.
+// Requirement: Display final scores, accuracy, and interactive menu for Section 2.
 static void PrintFinalStatistics(
     string[] answerLabels,
     int[] correctByCategory,
@@ -506,64 +516,110 @@ static void PrintFinalStatistics(
     int totalAnswers,
     int[] evaluationResults,
     string[,] generatedWords,
-    int[] wordCounts)
+    int[] wordCounts,
+    string[,] userAnswers,
+    string[,] correctAnswers,
+    int questionCount)
 {
-    Console.WriteLine("==================================================");
-    Console.WriteLine("FINAL RESULTS");
+    string choice = "";
 
-    Console.WriteLine(
-        "Correct answers: " +
-        totalCorrectAnswers + " / " + totalAnswers);
-
-    Console.WriteLine(
-        "Incorrect answers: " +
-        (totalAnswers - totalCorrectAnswers) + " / " + totalAnswers);
-
-    double percentage = totalAnswers > 0
-        ? (double)totalCorrectAnswers * 100 / totalAnswers
-        : 0;
-
-    Console.WriteLine("Accuracy: " + percentage.ToString("F2") + "%");
-    Console.WriteLine();
-    Console.WriteLine("Results by category:");
-
-    for (int i = 0; i < answerLabels.Length; i++)
+    do
     {
-        Console.WriteLine(
-            "- " + answerLabels[i] + ": " +
-            correctByCategory[i] + " / " +
-            (totalAnswers / answerLabels.Length));
-    }
+        Console.WriteLine("==================================================");
+        Console.WriteLine("Statistics & Results MENU");
+        Console.WriteLine("1. Show percentage of correct answers");
+        Console.WriteLine("2. Show user's answers for all questions");
+        Console.WriteLine("3. Show correct answers for each question");
+        Console.WriteLine("4. Show stored generated words");
+        Console.WriteLine("5. Show user answers and correct answers");
+        Console.WriteLine("Type 'quit' to exit the program.");
+        Console.Write("Enter your choice (1-5 or quit): ");
+        
+        choice = (Console.ReadLine() ?? "").Trim();
 
-    // Requirement: Display the evaluation result stored for every question.
-    Console.WriteLine();
-    Console.WriteLine("Evaluation results for all questions:");
-
-    for (int i = 0; i < evaluationResults.Length; i++)
-    {
-        Console.WriteLine(
-            "Question " + (i + 1) +
-            ": Evaluation = " + evaluationResults[i]);
-    }
-
-    // Requirement: Display all generated words stored in the array.
-    Console.WriteLine();
-    Console.WriteLine("Stored generated words:");
-
-    for (int i = 0; i < wordCounts.Length; i++)
-    {
-        Console.Write("Question " + (i + 1) + ": ");
-
-        for (int j = 0; j < wordCounts[i]; j++)
+        if (choice.Equals("quit", StringComparison.OrdinalIgnoreCase))
         {
-            if (j > 0)
-            {
-                Console.Write(" ");
-            }
-
-            Console.Write(generatedWords[i, j]);
+            Console.WriteLine("Exiting the program. Goodbye!");
+            break;
         }
 
         Console.WriteLine();
-    }
+
+        switch (choice)
+        {
+            case "1":
+                Console.WriteLine("Correct answers: " + totalCorrectAnswers + " / " + totalAnswers);
+                double percentage = totalAnswers > 0 ? (double)totalCorrectAnswers * 100 / totalAnswers : 0;
+                Console.WriteLine("Accuracy: " + percentage.ToString("F2") + "%");
+                Console.WriteLine("Results by category:");
+                for (int i = 0; i < answerLabels.Length; i++)
+                {
+                    Console.WriteLine("- " + answerLabels[i] + ": " + correctByCategory[i] + " / " + (totalAnswers / answerLabels.Length));
+                }
+                Console.WriteLine("Evaluation results for all questions:");
+                for (int i = 0; i < evaluationResults.Length; i++)
+                {
+                    Console.WriteLine("Question " + (i + 1) + ": Evaluation = " + evaluationResults[i]);
+                }
+                break;
+
+            case "2":
+                Console.WriteLine("User's answers for all questions (without words):");
+                for (int i = 0; i < questionCount; i++)
+                {
+                    Console.WriteLine("Question " + (i + 1) + ":");
+                    for (int j = 0; j < answerLabels.Length; j++)
+                    {
+                        Console.WriteLine("  - " + answerLabels[j] + ": " + userAnswers[i, j]);
+                    }
+                }
+                break;
+
+            case "3":
+                Console.WriteLine("Correct answers for each question (without words):");
+                for (int i = 0; i < questionCount; i++)
+                {
+                    Console.WriteLine("Question " + (i + 1) + ":");
+                    for (int j = 0; j < answerLabels.Length; j++)
+                    {
+                        Console.WriteLine("  - " + answerLabels[j] + ": " + correctAnswers[i, j]);
+                    }
+                }
+                break;
+
+            case "4":
+                Console.WriteLine("Stored generated words:");
+                for (int i = 0; i < wordCounts.Length; i++)
+                {
+                    Console.Write("Question " + (i + 1) + ": ");
+                    for (int j = 0; j < wordCounts[i]; j++)
+                    {
+                        if (j > 0) Console.Write(" ");
+                        Console.Write(generatedWords[i, j]);
+                    }
+                    Console.WriteLine();
+                }
+                break;
+
+            case "5":
+                Console.WriteLine("User answers and correct answers (without words):");
+                for (int i = 0; i < questionCount; i++)
+                {
+                    Console.WriteLine("Question " + (i + 1) + ":");
+                    for (int j = 0; j < answerLabels.Length; j++)
+                    {
+                        Console.WriteLine("  - " + answerLabels[j] + " | User: " + userAnswers[i, j] + " | Correct: " + correctAnswers[i, j]);
+                    }
+                }
+                break;
+
+            default:
+                Console.WriteLine("Invalid choice. Please enter a number between 1 and 5 or type 'quit'.");
+                break;
+        }
+
+        Console.WriteLine();
+
+    } while (true);
+  
 }
